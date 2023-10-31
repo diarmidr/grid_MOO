@@ -1,0 +1,3 @@
+# Don't put venv folder on git
+venv/
+.venv
