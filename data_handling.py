@@ -40,7 +40,7 @@ def export_csv(res):
         results['f_3'] += [res.F[i][2]]
         results['CV'] += [res.CV[i]]
     print(results)
-    pd.DataFrame(results).to_csv('MOO_grid_output_' +
+    pd.DataFrame(results).to_csv('grid_MOO_output_' +
                                  str(datetime.datetime.now().year) + '_' +
                                  str(datetime.datetime.now().month) + '_' +
                                  str(datetime.datetime.now().day) + '_' +

@@ -1,3 +1,5 @@
 # Don't put venv folder on git
 venv/
 .venv
+# Results files
+*grid_moo_output*
