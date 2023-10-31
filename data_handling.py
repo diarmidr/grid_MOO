@@ -35,9 +35,9 @@ def export_csv(res):
         results['X_9'] += [res.X[i][9]]
         results['X_10'] += [res.X[i][10]]
         results['X_11'] += [res.X[i][11]]
-        results['f_1'] += [-res.F[i][0]]
-        results['f_2'] += [res.F[i][1]/1e9]
-        results['f_3'] += [res.F[i][2] / 1e9]
+        results['f_1'] += [res.F[i][0]/1e9]
+        results['f_2'] += [-res.F[i][1]]
+        results['f_3'] += [res.F[i][2]]
         results['CV'] += [res.CV[i]]
     print(results)
     pd.DataFrame(results).to_csv('MOO_grid_output_' +

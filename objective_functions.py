@@ -25,7 +25,7 @@ def annualised_capex(X, cost_dict, *args, **kwargs):
     #print("annualised_capex=", annualised_capex)
     return annualised_capex
 
-def dispatch_v2(t_data, X, ESS_array, ocgt_params, graph, metric):
+def dispatch_v2(t_data, X, ESS_array, ocgt_params, graph):
     timestep = 1  # Hours
     # This loop just corrects any 0 values from the input so that we don't get div by 0 errors
     for i in range(len(X)):
@@ -152,14 +152,11 @@ def dispatch_v2(t_data, X, ESS_array, ocgt_params, graph, metric):
     #print(p_ocgt_log)
     #ocgt_log = pd.DataFrame({"p_ocgt": p_ocgt_log}).to_csv("ocgt_log.csv")
     #print("sum ocgt log", sum(p_ocgt_log))
-    """Fuel cost of running OCGT (£/year, so must divide by years in modelled period)"""
-    fuel_cost = sum(p_ocgt_log) * timestep * 1000 * ocgt_params["£_ng_per_MWh"]  # £
+    """Fuel cost of running OCGT (£)"""
+    fuel_cost = sum(p_ocgt_log) * 1000 * timestep * ocgt_params["£_ng_per_MWh"]
+    # £
     """Emissions from OCGT spread over all demand met"""
-    co2_emissions = (sum(p_ocgt_log) * 1000 * timestep * ocgt_params["kg_CO2_per_MWh"]) /\
-                    (t_data["demand"].iloc[1:].sum() + sum(deficit_log))  # kgCO2/MWh = gCO2/kWh
-    if metric == "demand_met":
-        return percentage_demand_met
-    elif metric == "CO2_emissions":
-        return co2_emissions
-    elif metric == "fuel_cost":
-        return fuel_cost
+    co2_emissions = (sum(p_ocgt_log) * timestep * ocgt_params["kg_CO2_per_MWh"])\
+        / demand_met  # GWh OCGT * kg_CO2/MWh / GWh total demand met
+
+    return fuel_cost, -percentage_demand_met, co2_emissions
