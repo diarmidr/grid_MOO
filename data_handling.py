@@ -16,9 +16,10 @@ def export_csv(res):
                'X_9': [],
                'X_10': [],
                'X_11': [],
-               'f_1': [],
-               'f_2': [],
-               'f_3': [],
+               'Obj_%_demand_met': [],
+               'Obj_worst_case_deficit(GW)': [],
+               'Obj_cost(£/MWh)': [],
+               'Obj_CO2(g/MWh)': [],
                'CV': []
                }
 
@@ -35,9 +36,10 @@ def export_csv(res):
         results['X_9'] += [res.X[i][9]]
         results['X_10'] += [res.X[i][10]]
         results['X_11'] += [res.X[i][11]]
-        results['f_1'] += [res.F[i][0]/1e9]
-        results['f_2'] += [-res.F[i][1]]
-        results['f_3'] += [res.F[i][2]]
+        results['Obj_%_demand_met'] += [-res.F[i][0]/1e9]
+        results['Obj_worst_case_deficit(GW)'] += [-res.F[i][1]]
+        results['Obj_cost(£/MWh)'] += [res.F[i][2]]
+        results['Obj_CO2(g/MWh)'] += [res.F[i][3]]
         results['CV'] += [res.CV[i]]
     print(results)
     pd.DataFrame(results).to_csv('grid_MOO_output_' +

@@ -23,34 +23,34 @@ class MyProblem(ElementwiseProblem):
 
     def __init__(self):
         super().__init__(n_var=12,
-                         n_obj=3,
+                         n_obj=4,
                          n_ieq_constr=2,
                          xl=np.array([0, 0, 90, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
                          xu=np.array([10, 40, 200, 100, 10, 100, 100, 12, 1000, 1000, 1000, 60]))
 
     #return fuel_cost, percentage_demand_met, co2_emissions
 
-    def _evaluate(self, X, out, *args, **kwargs):
+    def _evaluate(self, x, out, *args, **kwargs):
         # Dispatch function returns fuel cost (£), demand met 9%) and CO2 emissions (kg/MWh).
 
-        fuel_cost, f2, f3 = obj_funcs.dispatch_v2(t_data, X, ESS_dict, OCGT_dict, graph=False)
-        f1 = obj_funcs.annualised_capex(X, CAPEX_dict) + fuel_cost
+        f1, f2, f3, f4 = obj_funcs.dispatch_v2(t_data, x, CAPEX_dict, ESS_dict, OCGT_dict, graph=False)
+
 
         # Constraints, in format < 0
-        g1 = X[4] * X[8] - 700  # PHS Energy rating less than 700Gwh (with power < 10GW set in bounds above)
-        g2 = X[3] + X[4] + X[5] + X[6] - 100  # Total storage power < 100GW
-        print("Objectives", f1, f2, f3)
-        out["F"] = [f1, f2, f3]
+        g1 = x[4] * x[8] - 700  # PHS Energy rating less than 700Gwh (with power < 10GW set in bounds above)
+        g2 = x[3] + x[4] + x[5] + x[6] - 100  # Total storage power < 100GW
+        print("Objectives", f1, f2, f3, f4)
+        out["F"] = [f1, f2, f3, f4]
         out["G"] = [g1, g2]
 
 
 problem = MyProblem()
 
-algorithm = NSGA2(pop_size=100)
+algorithm = NSGA2(pop_size=10)
 
 res = minimize(problem,
                algorithm,
-               ("n_gen", 50),
+               ("n_gen", 10),
                verbose=True,
                return_least_infeasible=True,
                seed=1)
