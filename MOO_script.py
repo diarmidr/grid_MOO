@@ -15,7 +15,6 @@ t_data = pd.read_csv("data/generator_profiles.csv")
 # System level parameters #
 ###########################
 demand_scaling = 1  # I'm fixing demand at current levels, no point scaling it as it will also change shape
-
 # Variable key:
 # P_nuclear, P_PV, P_wind_offshore, P_ESS_1, P_ESS_2, P_ESS_3, P_ESS_4, dur_ESS_1, dur_ESS_2, dur_ESS_3, dur_ESS_4, P_OCGT
 
@@ -25,8 +24,8 @@ class MyProblem(ElementwiseProblem):
         super().__init__(n_var=12,
                          n_obj=4,
                          n_ieq_constr=2,
-                         xl=np.array([0, 0, 90, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
-                         xu=np.array([10, 40, 200, 100, 10, 100, 100, 12, 1000, 1000, 1000, 60]))
+                         xl=np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+                         xu=np.array([75, 100, 200, 100, 10, 100, 100, 12, 1000, 1000, 1000, 55]))
 
     #return fuel_cost, percentage_demand_met, co2_emissions
 
@@ -46,11 +45,11 @@ class MyProblem(ElementwiseProblem):
 
 problem = MyProblem()
 
-algorithm = NSGA2(pop_size=10)
+algorithm = NSGA2(pop_size=200)
 
 res = minimize(problem,
                algorithm,
-               ("n_gen", 10),
+               ("n_gen", 100),
                verbose=True,
                return_least_infeasible=True,
                seed=1)

@@ -2,4 +2,4 @@
 venv/
 .venv
 # Results files
-*grid_moo_output*
+*grid_MOO_output*

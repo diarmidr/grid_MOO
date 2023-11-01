@@ -4,42 +4,42 @@ import pandas as pd
 # f_1 = objective function 1 (demand_met)
 # f_2 = objective function 2 (cost)
 def export_csv(res):
-    results = {'X_0': [],
-               'X_1': [],
-               'X_2': [],
-               'X_3': [],
-               'X_4': [],
-               'X_5': [],
-               'X_6': [],
-               'X_7': [],
-               'X_8': [],
-               'X_9': [],
-               'X_10': [],
-               'X_11': [],
-               'Obj_%_demand_met': [],
-               'Obj_worst_case_deficit(GW)': [],
-               'Obj_cost(£/MWh)': [],
-               'Obj_CO2(g/MWh)': [],
+    results = {'% load met': [],
+               'Max deficit (GW)': [],
+               'Cost(£/MWh)': [],
+               'CO2 (g/MWh)': [],
+               'GW_nucl.': [],
+               'GW_PV': [],
+               'GW_wind': [],
+               'GW_gas': [],
+               'GW_LIB': [],
+               'GW_PH': [],
+               'GW_CAES': [],
+               'GW_H2': [],
+               'h_LIB': [],
+               'h_PH': [],
+               'h_CAES': [],
+               'h_H2': [],
                'CV': []
                }
 
     for i in range(len(res.X)):
-        results['X_0'] += [res.X[i][0]]
-        results['X_1'] += [res.X[i][1]]
-        results['X_2'] += [res.X[i][2]]
-        results['X_3'] += [res.X[i][3]]
-        results['X_4'] += [res.X[i][4]]
-        results['X_5'] += [res.X[i][5]]
-        results['X_6'] += [res.X[i][6]]
-        results['X_7'] += [res.X[i][7]]
-        results['X_8'] += [res.X[i][8]]
-        results['X_9'] += [res.X[i][9]]
-        results['X_10'] += [res.X[i][10]]
-        results['X_11'] += [res.X[i][11]]
-        results['Obj_%_demand_met'] += [-res.F[i][0]/1e9]
-        results['Obj_worst_case_deficit(GW)'] += [-res.F[i][1]]
-        results['Obj_cost(£/MWh)'] += [res.F[i][2]]
-        results['Obj_CO2(g/MWh)'] += [res.F[i][3]]
+        results['% load met'] += [-res.F[i][0]]
+        results['Max deficit (GW)'] += [res.F[i][1]]
+        results['Cost(£/MWh)'] += [res.F[i][2]]
+        results['CO2 (g/MWh)'] += [res.F[i][3]]
+        results['GW_nucl.'] += [res.X[i][0]]
+        results['GW_PV'] += [res.X[i][1]]
+        results['GW_wind'] += [res.X[i][2]]
+        results['GW_gas'] += [res.X[i][11]]  # Need to sort this ordering out so OCGT is with other generation
+        results['GW_LIB'] += [res.X[i][3]]
+        results['GW_PH'] += [res.X[i][4]]
+        results['GW_CAES'] += [res.X[i][5]]
+        results['GW_H2'] += [res.X[i][6]]
+        results['h_LIB'] += [res.X[i][7]]
+        results['h_PH'] += [res.X[i][8]]
+        results['h_CAES'] += [res.X[i][9]]
+        results['h_H2'] += [res.X[i][10]]
         results['CV'] += [res.CV[i]]
     print(results)
     pd.DataFrame(results).to_csv('grid_MOO_output_' +

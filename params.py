@@ -4,7 +4,7 @@
 # Annualised CAPEX for generation and storage, Key: [Name, £/kW annualised]
 """These are calculated from levelised costs and capacity factors. E.g. OCGT from BEIS 2025 predicted LCOE of £199/MWh
 for a 600MW plant running 500h/year, of which £86/MWh is roughly CAPEX. £86/MWh * 500h/year = £43000/MW.year, or £43/kW.year."""
-CAPEX_dict = {"Offshore_wind": [200, 0],
+CAPEX_dict = {"Offshore_wind": [164, 0],
               "PV": [50, 0],
               "Nuclear": [852, 0],
               "OCGT": [43, 0],
