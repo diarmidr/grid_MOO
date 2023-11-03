@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 from pymoo.algorithms.moo.nsga2 import NSGA2
 from pymoo.core.problem import ElementwiseProblem
+from multiprocessing.pool import ThreadPool
+from pymoo.core.problem import StarmapParallelization
 from pymoo.optimize import minimize
 from pymoo.visualization.scatter import Scatter
 from data_handling import export_csv
@@ -18,14 +20,14 @@ demand_scaling = 1  # I'm fixing demand at current levels, no point scaling it a
 # Variable key:
 # P_nuclear, P_PV, P_wind_offshore, P_ESS_1, P_ESS_2, P_ESS_3, P_ESS_4, dur_ESS_1, dur_ESS_2, dur_ESS_3, dur_ESS_4, P_OCGT
 
-class MyProblem(ElementwiseProblem):
+class GridMOOProblem(ElementwiseProblem):
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         super().__init__(n_var=12,
                          n_obj=4,
                          n_ieq_constr=2,
                          xl=np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
-                         xu=np.array([75, 100, 200, 100, 10, 100, 100, 12, 1000, 1000, 1000, 55]))
+                         xu=np.array([75, 100, 200, 100, 10, 100, 100, 12, 1000, 1000, 1000, 55]), **kwargs)
 
     #return fuel_cost, percentage_demand_met, co2_emissions
 
@@ -42,17 +44,22 @@ class MyProblem(ElementwiseProblem):
         out["F"] = [f1, f2, f3, f4]
         out["G"] = [g1, g2]
 
+# initialize the thread pool and create the runner
+n_threads = 4
+pool = ThreadPool(n_threads)
+runner = StarmapParallelization(pool.starmap)
 
-problem = MyProblem()
+problem = GridMOOProblem(elementwise_runner=runner)
 
 algorithm = NSGA2(pop_size=20)
 
 res = minimize(problem,
                algorithm,
-               ("n_gen", 5),
+               termination=("n_gen", 5),
                verbose=True,
                return_least_infeasible=True,
                seed=1)
+pool.close()
 print("execution time", res.exec_time)
 export_csv(res)
 plot = Scatter()
