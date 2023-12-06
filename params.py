@@ -28,3 +28,4 @@ ESS_dict = [["LIB_type", 0.85, 0.5],
             ["PHS_type", 0.75, 0.5],
             ["CAES_type", 0.5, 0.5],
             ["HES_type", 0.4, 0.5]]
+

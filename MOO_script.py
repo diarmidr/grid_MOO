@@ -4,13 +4,13 @@ from pymoo.algorithms.moo.nsga2 import NSGA2
 from pymoo.core.problem import ElementwiseProblem
 from pymoo.optimize import minimize
 from pymoo.visualization.scatter import Scatter
-from data_handling import export_csv
+from output_data_handling import export_csv
 from params import CAPEX_dict, OCGT_dict, ESS_dict, BECCS_dict
 import objective_functions as obj_funcs
 ####################
 # Time series data #
 ####################
-t_data = pd.read_csv("data/generator_profiles.csv")
+t_data = pd.read_csv("data/generator_profiles_idealised_nuclear.csv")
 ###########################
 # System level parameters #
 ###########################
@@ -56,7 +56,7 @@ algorithm = NSGA2(pop_size=200)
 
 res = minimize(problem,
                algorithm,
-               ("n_gen", 100),
+               ("n_gen", 20),
                verbose=True,
                return_least_infeasible=True)
 print("execution time", res.exec_time)
