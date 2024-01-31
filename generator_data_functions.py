@@ -23,7 +23,60 @@ def gridwatch_data_pull(file, start_date, end_date):
     print('resampling_finished_@', dt.datetime.now())
     return filtered
 
-def BM_reports_API_pull(start_date, end_date):
+def BM_reports_1630_API_pull(start_date, end_date):
+    """Due to uncertainty around embedded generation, I've made this function to aggregate known HH metered wind farms
+    in order to get a representative load profile for the ensemble. Goes like this:
+    1) Obtain data for a balancing mechanism unit (or several units belonging to one site)
+    2) Clean any outages.
+    3) Divided output by capacity of installation to get load factor."""
+    # This dictionary details the capacity of an installation, and the BM sub-units it comprises (for API query).
+    offshore_installations = {"LARYO": [630, ["-1", "-2", "-3", "-4"]]}
+
+    BMUnitID = "LARYO-1"
+    #############################
+    # Parse dates to API format #
+    #############################
+    date = start_date
+    while date <= end_date:
+        if date.month < 10:
+            month = '0' + str(date.month)
+        else:
+            month = str(date.month)
+        if date.day < 10:
+            day = '0' + str(date.day)
+        else:
+            day = str(date.day)
+        date_string = str(date.year) + '-' + month + '-' + day
+        #######################################
+        # Query API per day, per installation #
+        #######################################
+        offshore_df = pd.DataFrame()
+        for oi in offshore_installations:
+            installation_df = pd.DataFrame()
+            for bm_unit_suffix in offshore_installations[oi][1]:
+                bm_unit_id = oi+bm_unit_suffix
+                print(bm_unit_id)
+                query_string = "https://api.bmreports.com/BMRS/B1610/V2?APIKey=9du8tosrd1t3pka&SettlementDate=" +\
+                    date_string + "&Period=*&NGCBMUnitID="+bm_unit_id+"&ServiceType=CSV"
+                mw = pd.read_csv(query_string, skiprows=1, engine='python')["Quantity (MW)"]
+                installation_df = pd.concat([installation_df, mw], axis=1)
+            # Sum teh output from sub-units and normalise by capacity
+            installation_df[oi] = installation_df.sum(axis=1)/offshore_installations[oi][0]
+            offshore_df = pd.concat([offshore_df, installation_df[oi]], axis=1)
+            print(installation_df)
+            print(offshore_df)
+            # Now pass installation output and timestamp index to
+        # extracted['timestamp'] = extracted.apply(
+        #     lambda row: dt.datetime(int(row.Date[0:4]),int(row.Date[5:7]),
+        #                             int(row.Date[8:10]),int((row.Period-1)/2)) if row.Period <=48
+        #                             else dt.datetime(int(row.Date[0:4]),int(row.Date[5:7]),
+        #                                              int(row.Date[8:10]),23),axis=1)
+        # # Next we go through the
+        # print(raw)
+        # raw.to_csv("output_from_BM1610.csv")
+        date += dt.timedelta(days=1)
+
+def BM_reports_1620_API_pull(start_date, end_date):
     print("Started Wind data pull from BMReports API B1620")
     # This first bit makes repeated API calls, but only keeps the generators we are interested in
     generator_data = {'Timestamp': [],
