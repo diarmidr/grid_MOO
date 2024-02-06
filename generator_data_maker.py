@@ -7,10 +7,10 @@ import pandas as pd
 import math
 import datetime as dt
 
-from generator_data_functions import gridwatch_data_pull, BM_reports_1620_API_pull, BM_reports_1630_API_pull
+from generator_data_functions import gridwatch_data_pull, BM_reports_1610_API_pull, BM_reports_1630_API_pull
 
-start_date = dt.datetime(2023, 1, 7)
-end_date = dt.datetime(2023, 1, 7)
+start_date = dt.datetime(2019, 1, 1)
+end_date = dt.datetime(2023, 12, 31)
 
 # Option on how to generate the nuclear profile
 #nuclear_profile = "Historic"
@@ -18,9 +18,9 @@ nuclear_profile = "Idealised"
 
 # This is data on installed capacity per generator class, and will be used to normalise historic output
 capacity_data = pd.read_csv("data/historic_capacity.csv")
-wind_data_BM_1630 = BM_reports_1630_API_pull(start_date, end_date)
-#wind_data = BM_reports_1620_API_pull(start_date, end_date)
-# print(wind_data)
+wind_data_BM_1610 = BM_reports_1610_API_pull(start_date, end_date)
+#wind_data = BM_reports_1630_API_pull(start_date, end_date)
+#wind_data.to_csv("B1630_data.csv")
 # for idx, row in wind_data.iterrows():
 #     # Determine quarter of year to find installed capacity
 #     q = math.ceil(idx.month / 3)
