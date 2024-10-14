@@ -1,2 +1,2 @@
-# MOO_grid
- Multi-objetive net-zero grid portfolio optimisation with Pymoo
+# grid_MOO
+ Multi-objective net-zero grid portfolio optimisation with Pymoo
